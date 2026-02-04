@@ -6,12 +6,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat 'python -m py_compile sources/add2vals.py sources/calc.py'
+                bat 'py -m py_compile sources/add2vals.py sources/calc.py'
             }
         }
         stage('Test') {
             steps {
-                bat 'python -m pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+                bat 'py -m pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
             }
             post {
                 always {

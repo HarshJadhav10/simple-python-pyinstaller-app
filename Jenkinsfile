@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 bat '''
-                python3 -m py_compile sources/add2vals.py sources/calc.py
+                py -m py_compile sources/add2vals.py sources/calc.py
                 '''
             }
         }
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 bat '''
                 mkdir test-reports
-                python3 -m pytest --verbose --junit-xml=test-reports/results.xml sources/test_calc.py
+                py -m pytest --verbose --junit-xml=test-reports/results.xml sources/test_calc.py
                 '''
             }
             post {
@@ -34,7 +34,7 @@ pipeline {
         stage('Deliver') {
             steps {
                 bat '''
-                python3 -m PyInstaller --onefile sources/add2vals.py
+                py -m PyInstaller --onefile sources/add2vals.py
                 '''
             }
             post {

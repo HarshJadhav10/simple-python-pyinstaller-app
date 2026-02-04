@@ -1,20 +1,28 @@
 pipeline {
     agent any
-    options {
-        skipStagesAfterUnstable()
-    }
+
     stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Build') {
             steps {
-                bat 'python3 -m py_compile sources/add2vals.py sources/calc.py'
+                bat '''
+                python3 -m py_compile sources/add2vals.py sources/calc.py
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                bat 'if not exist test-reports mkdir test-reports'
-                bat 'python3 -m pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+                bat '''
+                mkdir test-reports
+                python3 -m pytest --verbose --junit-xml=test-reports/results.xml sources/test_calc.py
+                '''
             }
             post {
                 always {
@@ -25,11 +33,13 @@ pipeline {
 
         stage('Deliver') {
             steps {
-                bat 'python -m PyInstaller --onefile sources/add2vals.py'
+                bat '''
+                python3 -m PyInstaller --onefile sources/add2vals.py
+                '''
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'dist/add2vals.exe', fingerprint: true
+                    archiveArtifacts artifacts: 'dist/*.exe'
                 }
             }
         }
